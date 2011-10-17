@@ -50,20 +50,20 @@ schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
   echo "-----------------------------------"
 
 # Warm-up Run
-  # start=`date +%s`
-  # echo "Warm-up Running"
-  # ./cpu-bound & cpuPID=$!
-  # ./io-bound & ioPID=$!
-  # ./cpu_io-mix & cpu_ioPID=$!
-  # wait
-  # end=`date +%s`
-  # let "runTime=$end-$start"
-  # echo "Warm-up Complete in ${runTime}s."
+  start=`date +%s`
+  echo "Warm-up Running"
+  ./cpu-bound & cpuPID=$!
+  ./io-bound & ioPID=$!
+  ./cpu_io-mix & cpu_ioPID=$!
+  wait
+  end=`date +%s`
+  let "runTime=$end-$start"
+  echo "Warm-up Complete in ${runTime}s."
   
   echo "-----------------------------------"
 
 #Create the report output file
-  echo "Creating Report"
+  echo "Initializing Report"
   reportName="$runName-${timeDate}.csv"
   touch reportTEMP.tmp
   touch $reportName

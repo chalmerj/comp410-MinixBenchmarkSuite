@@ -1,8 +1,10 @@
 #!/usr/pkg/bin/bash
 timeDate=`date +%H%M%S-%d%m%y`
 runName="test"
-echo -e "Please enter the name of this test run (e.g. control):"
+echo -n "Please enter the name of this test run (e.g. control): "
 read runName
+
+
 
 #  This script defines the test protocol for running the scheduler benchmarks.
 #  -- Record Scheduler Variables
@@ -12,6 +14,26 @@ read runName
 #  -- Append scheduler variables to end of report file
 #  -- Clean up temp files
 
+# Function Definitions
+
+function interruptHandler() {
+	echo -e "\nReceived Interrupt"
+	echo "Stopping running tasks"
+	if [ $cpuPID -ne 0 ] ; then kill -9 $cpuPID ; fi
+	if [ $ioPID -ne 0 ] ; then kill -9 $ioPID ; fi
+	if [ $cpu_ioPID -ne 0 ] ; then kill -9 $cpu_ioPID ; fi 
+	
+	echo "Removing Temp Files"
+ 
+	 if [ -f reportTEMP.tmp ] ; then rm -f reportTEMP.tmp ; fi
+	 if [ ${start} -a -f cpu-${start}.txt ] ; then rm -f *${start}.txt ; fi
+	 if [ $reportName -a -f ${reportName} ] ; then rm -f $reportName ; fi
+	
+	exit
+
+}
+
+trap interruptHandler SIGHUP SIGINT SIGTERM
 
 # Record Current Scheduler variables
 nr_sched_queues=`cat /usr/src/include/minix/config.h | awk 'NR == 78 {print $3}'`
@@ -28,15 +50,15 @@ schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
   echo "-----------------------------------"
 
 # Warm-up Run
-  start=`date +%s`
-  echo "Beginning Warm-up Run"
-  ./cpu-bound &
-  ./io-bound &
-  ./cpu_io-mix &
-  wait
-  end=`date +%s`
-  let "runTime=$end-$start"
-  echo "Warm-up Complete in ${runTime}s."
+  # start=`date +%s`
+  # echo "Warm-up Running"
+  # ./cpu-bound & cpuPID=$!
+  # ./io-bound & ioPID=$!
+  # ./cpu_io-mix & cpu_ioPID=$!
+  # wait
+  # end=`date +%s`
+  # let "runTime=$end-$start"
+  # echo "Warm-up Complete in ${runTime}s."
   
   echo "-----------------------------------"
 
@@ -57,9 +79,9 @@ schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
     do
       echo "Running Test $i"
       runStart=`date +%s`
-      ./cpu-bound > cpu-${start}.txt &
-      ./io-bound > io-${start}.txt &
-      ./cpu_io-mix > mix-${start}.txt &
+      ./cpu-bound > cpu-${start}.txt & cpuPID=$!
+      ./io-bound > io-${start}.txt & ioPID=$!
+      ./cpu_io-mix > mix-${start}.txt & cpu_ioPID=$!
       wait
       runEnd=`date +%s`
       let "runTime=$runEnd-$runStart"

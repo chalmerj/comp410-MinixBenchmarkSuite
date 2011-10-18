@@ -148,6 +148,8 @@ do
 		if [ $changesMade -gt 0 ]; then
 			askRecompile
 		fi
+		echo "Done"
+		break
 		;;
 	*)
 	echo "${opt}";

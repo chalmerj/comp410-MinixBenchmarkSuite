@@ -60,8 +60,12 @@ askRecompile()
 	echo "-----------------------------------"
 	echo "Changes made to source files. Recompile Kernel [y/N]? "
 	read -p "--> " answer
-	if [ answer == "y" ]; then
-		/usr/src/make world &
+	if [ answer == "y" -o answer == "yes" ]; then
+		cd /usr/src
+		make world
+	else
+		echo "Quitting"
+		exit
 	fi
 }
 
@@ -141,8 +145,6 @@ do
 		if [ $changesMade -gt 0 ]; then
 			askRecompile
 		fi
-		echo "Done";	
-		break 
 		;;
 	*)
 	echo "${opt}";

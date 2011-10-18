@@ -10,7 +10,7 @@ getVals()
 	nr_sched_queues=`cat /usr/src/include/minix/config.h | awk 'NR == 78 {print $3}'`
 	user_quantum=`cat /usr/src/include/minix/config.h | awk 'NR == 86 {print $3}'`
 	quantum_penalty=`cat /usr/src/servers/sched/schedule.c | 
-	                  awk -F" " 'NR == 44 {$3=sub(/;/,""); print $3}'`
+	                  awk -F" " 'NR == 44 {sub(/;/,""); print $3}'`
 	balance_timeout=`cat /usr/src/servers/sched/schedule.c | awk -F" " 'NR == 20 {print $3}'`
 }
 

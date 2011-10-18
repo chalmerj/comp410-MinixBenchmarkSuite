@@ -61,8 +61,7 @@ askRecompile()
 	echo "Changes made to source files. Recompile Kernel [y/N]? "
 	read -p "--> " answer
 	if [ answer == "y" ]; then
-		cd /usr/src/
-		make world &
+		/usr/src/make world &
 	fi
 }
 

@@ -63,7 +63,6 @@ askRecompile()
 	if [ answer == "y" ]; then
 		cd /usr/src/
 		make world &
-		break;
 	fi
 }
 

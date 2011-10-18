@@ -46,7 +46,7 @@ By adjusting the scheduler variables and running the benchmark tests, the user c
 7. At the boot menu, press the `2` key to boot the custom kernel.
 8. `cd` back to the benchmark directory
 9. Run ./test.sh ([See Below](#test.sh))
-10. At the prompt, enter then name of the test run. The name should reflect the variables being tested, and is provided your benefit to keep track of test report files. (e.g. `MAX_nr_sched_queues`)
+10. At the prompt, enter the name of the test run. The name should reflect the variables being tested, and is provided your benefit to keep track of test report files. (e.g. `MAX_nr_sched_queues`)
 11. Let the test run complete. (Time will depend on the power of your system)
 12. The test program will create a `.csv` file (e.g. `MAX_nr_sched_queues-172657-111011.csv`) with the name of the test run, time and date. Save this file somewhere off the Minix system for further review.
 13. Rinse and repeat.

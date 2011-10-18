@@ -18,13 +18,13 @@ read runName
 
 function interruptHandler() {
 	echo -e "\nReceived Interrupt"
+	
 	echo "Stopping running tasks"
 	if [ $cpuPID -ne 0 ] ; then kill -9 $cpuPID ; fi
 	if [ $ioPID -ne 0 ] ; then kill -9 $ioPID ; fi
 	if [ $cpu_ioPID -ne 0 ] ; then kill -9 $cpu_ioPID ; fi 
 	
-	echo "Removing Temp Files"
- 
+	echo "Removing temp files"
 	 if [ -f reportTEMP.tmp ] ; then rm -f reportTEMP.tmp ; fi
 	 if [ ${start} -a -f cpu-${start}.txt ] ; then rm -f *${start}.txt ; fi
 	 if [ $reportName -a -f ${reportName} ] ; then rm -f $reportName ; fi
@@ -42,9 +42,9 @@ quantum_penalty=`cat /usr/src/servers/sched/schedule.c |
                   awk -F" " 'NR == 44 {$3=sub(/;/,""); print $3}'`
 balance_timeout=`cat /usr/src/servers/sched/schedule.c | awk -F" " 'NR == 20 {print $3}'`
 
-schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
+schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout"
 
-# Itroduction
+# Introduction
   echo "Scheduler Benchmark Test Suite"
   echo "Begin Time: `date +%c`"
   echo "-----------------------------------"
@@ -67,7 +67,7 @@ schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
   reportName="$runName-${timeDate}.csv"
   touch reportTEMP.tmp
   touch $reportName
-  echo "nr_sched_queues,user_quantum,quantum_penalty,balance_timeout,program,real,user,system" >> $reportName
+  echo "nr_sched_queues,user_quantum,quantum_penalty,balance_timeout,runNumber,program,real,user,system" >> $reportName
 
 # Run the tests 10 times, output to temp files.
   echo "-----------------------------------"
@@ -87,7 +87,7 @@ schedVars="$nr_sched_queues,$user_quantum,$quantum_penalty,$balance_timeout,"
       let "runTime=$runEnd-$runStart"
       echo "Test $i complete in ${runTime}s."
       cat mix-${start}.txt io-${start}.txt cpu-${start}.txt >> reportTEMP.tmp
-      awk -v schedVars=$schedVars '{sub(/^/,schedVars); print}' reportTEMP.tmp >> $reportName
+      awk -v schedVars=$schedVars -v runNum=$i '{sub(/^/,schedVars","runNum","); print}' reportTEMP.tmp >> $reportName
       rm reportTEMP.tmp
       rm *${start}.txt
       echo "======="
